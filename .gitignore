@@ -139,4 +139,6 @@ server/djangoapp/migrations/
 .DS_Store
 *.pyc
 server/djangoapp/migrations/
+db.sqlite3
+.prettierignore
 
