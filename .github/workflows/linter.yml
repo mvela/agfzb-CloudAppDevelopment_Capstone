@@ -5,6 +5,7 @@ on:
     branches: [master, main, dev]
   pull_request:
     branches: [master, main, dev]
+  workflow_dispatch:
 
 jobs: # list of things to do
   lint_function_js:
@@ -61,5 +62,5 @@ jobs: # list of things to do
           pip install pylint
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with Pylint
-        run: pylint *.py
+        run: pylint **/*.py
         working-directory: server
