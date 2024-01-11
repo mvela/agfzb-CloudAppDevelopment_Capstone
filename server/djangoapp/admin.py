@@ -1,3 +1,6 @@
+"""
+Defines the admin interface for the models in the app
+"""
 from django.contrib import admin
 # from .models import related models
 
