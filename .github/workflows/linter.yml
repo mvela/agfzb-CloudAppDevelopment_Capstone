@@ -44,7 +44,7 @@ jobs: # list of things to do
           pip install pylint pylint-django
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with Pylint
-        run: pylint --load-plugins pylint_django *.py
+        run: pylint *.py
         working-directory: functions/sample/python
 
   lint_django_server:
@@ -60,7 +60,9 @@ jobs: # list of things to do
         run: |
           python -m pip install --upgrade pip
           pip install pylint pylint-django
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
+      - name: List installed packages
+        run: pip freeze
       - name: Lint with Pylint
         run: pylint --django-settings-module=djangobackend.settings **/*.py
         working-directory: server
