@@ -8,17 +8,26 @@ from .models import CarMake, CarModel
 admin.site.register(CarMake)
 admin.site.register(CarModel)
 
-# CarModelInline class
 class CarModelInline(admin.StackedInline):
+    """
+    Represents an inline model admin for CarModel.
+    """
     model = CarModel
 
-# CarModelAdmin class
 class CarModelAdmin(admin.ModelAdmin):
+    """
+    Admin class for managing CarModel objects in the Django admin interface.
+    """
     list_display = ('name', 'make', 'year')
     list_filter = ('make', 'year')
     search_fields = ('name', 'make__name', 'year')
     inlines = [CarModelInline]
 
-# CarMakeAdmin class with CarModelInline
 class CarMakeAdmin(admin.ModelAdmin):
+    """
+    Admin class for managing CarMake objects.
+    
+    This class defines the behavior of the admin interface for CarMake objects.
+    It includes the `CarModelInline` inline model for managing related CarModel objects.
+    """
     inlines = [CarModelInline]
