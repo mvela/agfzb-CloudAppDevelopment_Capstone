@@ -5,4 +5,10 @@ Dealership Review
 {% endblock %} 
 
 {% block content %}
+<br />
+<ul>
+    {% for dealer in dealerships %}
+        <li>{{ dealer.short_name }}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

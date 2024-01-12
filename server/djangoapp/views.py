@@ -5,11 +5,10 @@ It includes views to render the index page, about page, contact page,
 and handle user authentication including login, logout, and registration.
 """
 import logging
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
-# from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
 from django.contrib.auth import login, logout, authenticate
 
 # Get an instance of a logger
@@ -17,19 +16,21 @@ logger = logging.getLogger(__name__)
 
 
 # Create your views here.
-
 def get_dealerships(request):
     """
-    Update the `get_dealerships` view to render the index page with a list of dealerships
+    Get the list of dealerships from a remote server and render them in the index.html template.
     """
-    context = {}
+
+    url = "http://localhost:3000/dealerships/get"
+    dealerships = get_dealers_from_cf(url)
+    context = {"dealerships": dealerships}
     if request.method == "GET":
         return render(request, 'djangoapp/index.html', context)
     return HttpResponseNotAllowed("GET")
 
 def about(request):
     """
-    Create an `about` view to render a static about page
+    Renders the about page.
     """
     context = {}
     if request.method == "GET":
@@ -38,7 +39,7 @@ def about(request):
 
 def contact(request):
     """
-    Create a `contact` view to return a static contact page
+    Renders the contact page.
     """
     context = {}
     if request.method == "GET":
@@ -47,7 +48,12 @@ def contact(request):
 
 def login_request(request):
     """
-    Create a `login_request` view to handle sign in request
+    Handles the login request from the user.
+
+    This function checks the request method and performs the necessary actions based on it.
+    If the method is GET, it renders the login page.
+    If the method is POST, it authenticates the user's credentials and redirects to the dealership page if successful.
+    If the authentication fails, it displays an error message.
     """
     context = {}
     if request.method == "GET":
@@ -65,14 +71,14 @@ def login_request(request):
 
 def logout_request(request):
     """
-    Create a `logout_request` view to handle sign out request
+    Logs out the user and redirects to the dealership page.
     """
     logout(request)
     return redirect('djangoapp:get_dealerships')
 
 def registration_request(request):
     """
-    Create a `registration_request` view to handle sign up request
+    Handles the registration request from the user.
     """
     context = {}
     if request.method == "GET":
@@ -99,5 +105,16 @@ def registration_request(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
+def get_dealer_details(request, dealer_id):
+    """
+    Get the details of a specific dealer.
+    """
+    url = "http://localhost:5000/api/get_reviews"
+    reviews = get_dealer_reviews_from_cf(url, dealer_id)
+    context = {"reviews": reviews}
+    if request.method == "GET":
+        return render(request, 'djangoapp/dealer_details.html', context)
+    return HttpResponseNotAllowed("GET")
+
 
 # Create a `add_review` view to submit a review
