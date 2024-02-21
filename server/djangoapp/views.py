@@ -5,11 +5,15 @@ It includes views to render the index page, about page, contact page,
 and handle user authentication including login, logout, and registration.
 """
 import logging
+import json
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+import datetime
+from datetime import date
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -21,8 +25,7 @@ def get_dealerships(request):
     Get the list of dealerships from a remote server and render them in the index.html template.
     """
 
-    url = "http://localhost:3000/dealerships/get"
-    dealerships = get_dealers_from_cf(url)
+    dealerships = get_dealers_from_cf()
     context = {"dealerships": dealerships}
     if request.method == "GET":
         return render(request, 'djangoapp/index.html', context)
@@ -57,7 +60,7 @@ def login_request(request):
     """
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/login.html', context)
+        return render(request, 'djangoapp/user_login.html', context)
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['psw']
@@ -109,12 +112,67 @@ def get_dealer_details(request, dealer_id):
     """
     Get the details of a specific dealer.
     """
-    url = "http://localhost:5000/api/get_reviews"
-    reviews = get_dealer_reviews_from_cf(url, dealer_id)
-    context = {"reviews": reviews}
+    reviews = get_dealer_reviews_from_cf(dealer_id)
+    dealership = get_dealers_from_cf(dealer_id=dealer_id)[0]
+    context = {"dealership": dealership, "reviews": reviews}
     if request.method == "GET":
         return render(request, 'djangoapp/dealer_details.html', context)
     return HttpResponseNotAllowed("GET")
 
 
 # Create a `add_review` view to submit a review
+@login_required(login_url='/djangoapp/login')
+def add_review(request, dealer_id):
+    """
+    Add a review for a specific dealer.
+    """
+    dealership = get_dealers_from_cf(dealer_id=dealer_id)[0]
+    context = {"dealership": dealership}
+    if request.method == "GET":
+        return render(request, 'djangoapp/add_review.html', context)
+        
+    if request.method == "POST":
+        review = {}
+        review['purchase'] = False
+        if 'purchase' in request.POST:
+            review["purchase"] = True
+        review["dealership"] = dealer_id
+        review['username'] = request.user.username
+        review["name"] = request.user.first_name + " " + request.user.last_name
+        review["review"] = request.POST.get("review")
+        review["review_date"] = date.today().strftime("%m/%d/%Y")  # Add the review date
+        
+        if review["purchase"]:
+            review["purchase_date"] = request.POST.get("purchase_date")
+            review["car_make"] = request.POST.get("car_make")
+            review["car_model"] = request.POST.get("car_model")
+            review["car_year"] = request.POST.get("car_year")
+        else:
+            review["purchase_date"] = "" 
+            review["car_make"] = "" 
+            review["car_year"] = "" 
+            review["car_model"] = "" 
+        payload = review 
+        post_request(payload, dealer_id=dealer_id)
+        return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+    return HttpResponseNotAllowed(["GET", "POST"])
+
+# {
+#         "id": 1114,
+#         "name": "Upkar Lidder",
+#         "dealership": 15,
+#         "review": "Great service!",
+#         "purchase": false,
+#         "another": "field",
+#         "purchase_date": "02/16/2021",
+#         "car_make": "Audi",
+#         "car_model": "Car",
+#         "car_year": 2021
+#     } 
+
+
+
+
+
+
+

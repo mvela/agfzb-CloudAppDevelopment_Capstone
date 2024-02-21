@@ -1,21 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    {% load static %}
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css"
-      rel="stylesheet"
-    />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-  </head>
-  <body>
-    <!--Add review form here -->
-  </body>
-</html>
+<!-- index.html -->
+{% extends '../base/base.html' %} 
+{% block title %} 
+Dealership Review 
+{% endblock %} 
+
+{% block content %}
+<style>
+  form {
+    margin: 0 auto;
+    width: 80%;
+  }
+</style>
+<h2>{{dealership.city}} {{dealership.full_name}}</h2>
+<h3>{{dealership.address}}</h3>
+  <!--Add review form here -->
+<form action="{% url 'djangoapp:add_review' dealership.id%}" method="POST">
+  {% csrf_token %}
+  <!-- <label for="rating">Rating:</label> -->
+  <!-- <input type="number" id="rating" name="rating" min="1" max="5" required><br><br> -->
+  <label for="Review">Review:</label><br>
+  <textarea id="Review" name="review" rows="4" cols="100" required></textarea><br><br>
+  <label for="purchase">Purchase?</label>
+  <input type="checkbox" id="purchase" name="purchase" onclick="togglePurchaseOptions()"><br><br>
+  <div id="purchaseOptions" style="display: none;">
+    <label for="purchaseDate">Purchase Date:</label>
+    <input type="date" id="purchaseDate" name="purchase_date"><br><br>
+    <label for="carYear">Car Year:</label>
+    <input type="text" id="carYear" name="car_year"><br><br>
+    <label for="carMake">Car Make:</label>
+    <input type="text" id="carMake" name="car_make"><br><br>
+    <label for="carModel">Car Model:</label>
+    <input type="text" id="carModel" name="car_model"><br><br>
+  </div>
+  <input type="submit" value="Submit">
+</form>
+    
+
+<script>
+  function togglePurchaseOptions() {
+    var purchaseOptions = document.getElementById("purchaseOptions");
+    if (document.getElementById("purchase").checked) {
+      purchaseOptions.style.display = "block";
+    } else {
+      purchaseOptions.style.display = "none";
+    }
+  }
+</script>
+{% endblock %}

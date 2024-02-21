@@ -62,13 +62,14 @@ class CarModel(models.Model):
                "Type: " + self.type + "," + \
                "Year: " + str(self.year)
 
-class DealerReview():
+class DealerReview:
     """
     Represents the review of a dealer.
     """
-    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, 
-                 car_model, car_year, sentiment, id):
+    def __init__(self, dealership, username, name, purchase, review, purchase_date, car_make, 
+                 car_model, car_year, sentiment):
         self.dealership = dealership
+        self.username = username
         self.name = name
         self.purchase = purchase
         self.review = review
@@ -77,7 +78,6 @@ class DealerReview():
         self.car_model = car_model
         self.car_year = car_year
         self.sentiment = sentiment
-        self.id = id
 
 class CarDealer:
     """

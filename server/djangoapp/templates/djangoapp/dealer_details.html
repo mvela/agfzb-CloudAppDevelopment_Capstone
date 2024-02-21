@@ -4,10 +4,22 @@ Dealership Review
 {% endblock %} 
 
 {% block content %}
+<h2>{{dealership.city}} {{dealership.full_name}}</h2>
+<h3>{{dealership.address}}</h3>
+<a href="{% url 'djangoapp:add_review' dealership.id %}">Add Your Review!</a>
 <br />
 <ul>
   {% for review in reviews%}
-    <li>{{ review.review }} - {{review.name}}</li>
+    <li>
+      <p>{{review.username}} - <em>{{review.sentiment}}</em> </p>
+      <p>{{review.review}}</p>
+      {%if review.purchase %}
+        <p>
+        {{review.car_year}} {{review.car_make}} {{review.car_model}}
+        Purchased On {{review.purchase_date}}
+        </p>
+      {%endif%}
+    </li>
   {% endfor %}
 </ul>
 {%endblock%}

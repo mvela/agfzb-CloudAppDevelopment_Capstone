@@ -8,7 +8,9 @@ Dealership Review
 <br />
 <ul>
     {% for dealer in dealerships %}
-        <li>{{ dealer.short_name }}</li>
+        <li>
+            <a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.short_name }} - {{ dealer.city }}</a>
+        </li>
     {% endfor %}
 </ul>
 {% endblock %}
