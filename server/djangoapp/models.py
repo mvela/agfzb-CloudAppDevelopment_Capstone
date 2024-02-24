@@ -66,13 +66,14 @@ class DealerReview:
     """
     Represents the review of a dealer.
     """
-    def __init__(self, dealership, username, name, purchase, review, purchase_date, car_make, 
+    def __init__(self, dealership, username, name, purchase, review, review_date, purchase_date, car_make, 
                  car_model, car_year, sentiment):
         self.dealership = dealership
         self.username = username
         self.name = name
         self.purchase = purchase
         self.review = review
+        self.review_date = review_date
         self.purchase_date = purchase_date
         self.car_make = car_make
         self.car_model = car_model
@@ -84,7 +85,7 @@ class CarDealer:
     Represents a car dealer.
     """
 
-    def __init__(self, address, city, full_name, id, lat, long, short_name, st, zip):
+    def __init__(self, address, city, full_name, id, lat, long, short_name, state, zip):
         self.address = address
         self.city = city
         self.full_name = full_name
@@ -92,7 +93,7 @@ class CarDealer:
         self.lat = lat
         self.long = long
         self.short_name = short_name
-        self.st = st
+        self.state = state
         self.zip = zip
 
     def __str__(self):

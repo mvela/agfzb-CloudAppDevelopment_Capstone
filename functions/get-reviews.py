@@ -39,7 +39,6 @@ def get_reviews():
 
     # Execute the query using the query method
     result = db.get_query_result(selector)
-    print(result)
     # Create a list to store the documents
     data_list = []
 
@@ -48,7 +47,6 @@ def get_reviews():
         data_list.append(doc)
 
     # Return the data as JSON
-    print(data_list)
     return jsonify(data_list)
 
 
@@ -61,10 +59,7 @@ def post_review():
     # Extract review data from the request JSON
     review_data = request.json
 
-    # Validate that the required fields are present in the review data
-    #required_fields = ['id', 'name', 'dealership', 'review', 'purchase', 'purchase_date', 'car_make', 'car_model', 'car_year']
-    #required_fields = ['name', 'dealership', 'review', 'purchase', 'purchase_date', 'car_make', 'car_model', 'car_year']
-    required_fields = ['name', 'dealership', 'review', 'purchase'] 
+    required_fields = ['name', 'dealership', 'review', 'purchase', 'username'] 
     for field in required_fields:
         if field not in review_data:
             abort(400, description=f'Missing required field: {field}')

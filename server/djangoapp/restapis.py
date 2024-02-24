@@ -30,6 +30,10 @@ def get_dealers_from_cf(**kwargs):
         dealer_id = kwargs['dealer_id']
         # Call get_request with a URL parameter
         json_result = get_request(url, id=dealer_id)
+    elif 'state' in kwargs:
+        state = kwargs['state']
+        print("state: {}".format(state))
+        json_result = get_request(url, state=state)
     else:
         json_result = get_request(url)
 
@@ -39,7 +43,7 @@ def get_dealers_from_cf(**kwargs):
             dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
                                    id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
                                    short_name=dealer["short_name"],
-                                   st=dealer["st"], zip=dealer["zip"])
+                                   state=dealer["state"], zip=dealer["zip"])
             results.append(dealer_obj)
 
     return results
@@ -74,7 +78,7 @@ def get_dealer_reviews_from_cf(dealer_id):
         for review in reviews:
             # Create a CarDealer object with values in `doc` object
             review_obj = DealerReview(dealership=review["dealership"], username=review["username"], name=review["name"], purchase=review["purchase"],
-                                   review=review["review"], purchase_date=review["purchase_date"], car_make=review["car_make"],
+                                   review=review["review"], review_date=review.get("review_date", ""),purchase_date=review["purchase_date"], car_make=review["car_make"],
                                    car_model=review["car_model"],
                                    car_year=review["car_year"], sentiment="None")
 
@@ -87,7 +91,6 @@ def get_dealer_reviews_from_cf(dealer_id):
 def post_request(json_payload, **kwargs):
     #microservice enpoint to post review
     url = "http://localhost:5000/api/post_review"
-    print("POST from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
         response = requests.post(url, headers={'Content-Type': 'application/json'},

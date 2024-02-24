@@ -7,8 +7,8 @@ Dealership Review
 {% block content %}
 <style>
   form {
-    margin: 0 auto;
-    width: 80%;
+    margin: 1em 1em 1em 1em;
+    width: 30%;
   }
 </style>
 <h2>{{dealership.city}} {{dealership.full_name}}</h2>
@@ -16,33 +16,34 @@ Dealership Review
   <!--Add review form here -->
 <form action="{% url 'djangoapp:add_review' dealership.id%}" method="POST">
   {% csrf_token %}
-  <!-- <label for="rating">Rating:</label> -->
-  <!-- <input type="number" id="rating" name="rating" min="1" max="5" required><br><br> -->
   <label for="Review">Review:</label><br>
-  <textarea id="Review" name="review" rows="4" cols="100" required></textarea><br><br>
-  <label for="purchase">Purchase?</label>
-  <input type="checkbox" id="purchase" name="purchase" onclick="togglePurchaseOptions()"><br><br>
+  <textarea class="form-control" id="content" name="review" rows="2" required></textarea><br>
+  <div style="margin: 1em 1em 1em 1em;">
+    <input class="form-check-input" type="checkbox" id="purchase" name="purchase" onclick="togglePurchaseOptions()">
+    <label class="form-check-label" for="purchase">Did you purchase a car?</label><br>
+  </div>
   <div id="purchaseOptions" style="display: none;">
-    <label for="purchaseDate">Purchase Date:</label>
-    <input type="date" id="purchaseDate" name="purchase_date"><br><br>
-    <label for="carYear">Car Year:</label>
-    <input type="text" id="carYear" name="car_year"><br><br>
-    <label for="carMake">Car Make:</label>
-    <input type="text" id="carMake" name="car_make"><br><br>
-    <label for="carModel">Car Model:</label>
-    <input type="text" id="carModel" name="car_model"><br><br>
+    <label for="carOptions" style="display: inline-block; margin-right: 5px;"><strong>Select your car (model-make-year):</strong></label>
+    <select name="carOptions" id="carOptions" class="form-select d-inline-block" style="width: auto;">
+      {% for car in cars %}
+        <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year }}</option>
+      {% endfor %}
+    </select><br>
+    <label for="date" id="date_label"><strong>Date Purchased: </strong></label>
+    <input type="date" id="date" name="purchaseDate"><br>
   </div>
   <input type="submit" value="Submit">
 </form>
-    
 
 <script>
   function togglePurchaseOptions() {
     var purchaseOptions = document.getElementById("purchaseOptions");
     if (document.getElementById("purchase").checked) {
       purchaseOptions.style.display = "block";
+      $('#carOptions, #date').prop('required', true);
     } else {
       purchaseOptions.style.display = "none";
+      $('#carOptions, #date').prop('required', false);
     }
   }
 </script>
